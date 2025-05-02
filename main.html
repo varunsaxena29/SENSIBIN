@@ -1,0 +1,860 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensibin | Smart Waste Disposal System</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2ecc71;
+      --primary-dark: #27ae60;
+      --secondary: #3498db;
+      --secondary-dark: #2980b9;
+      --accent: #f1c40f;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --gray: #95a5a6;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark);
+      color: var(--light);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .background-image {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://i.ibb.co/jvNjXQCf/Whats-App-Image-2025-05-02-at-03-22-43-2b4fe6e8.jpg') no-repeat center center;
+      background-size: cover;
+      z-index: -2;
+      filter: blur(2px);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(44, 62, 80, 0.85);
+      z-index: -1;
+    }
+
+    /* Header Styles */
+    .site-header {
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 1px;
+    }
+
+    .logo-text span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      padding-bottom: 5px;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* Main Content Styles */
+    .page-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .container {
+      padding: 120px 20px 60px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-section {
+      margin-bottom: 60px;
+      padding: 40px 20px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #main-heading {
+      font-size: 52px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      font-size: 22px;
+      font-weight: 300;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      letter-spacing: 1px;
+    }
+
+    .action-section {
+      margin-top: 50px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .action-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .action-card h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary);
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .action-btn:hover {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(46, 204, 113, 0.4);
+    }
+
+    .action-btn i {
+      font-size: 18px;
+    }
+
+    .map-btn {
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      margin: 40px auto;
+      display: inline-flex;
+    }
+
+    .map-btn:hover {
+      background: linear-gradient(135deg, var(--secondary-dark), var(--secondary));
+      box-shadow: 0 6px 18px rgba(52, 152, 219, 0.4);
+    }
+
+    #locationResult,
+    #routeResult {
+      margin-top: 15px;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 1.6;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 3px solid var(--primary);
+    }
+
+    #routeResult {
+      margin-top: 20px;
+      white-space: pre-line;
+      text-align: left;
+      min-height: 60px;
+    }
+
+    .truck-container {
+      position: relative;
+      width: 100%;
+      height: 80px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .road {
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--gray) 0%, var(--gray) 100%);
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      z-index: -1;
+      border-radius: 4px;
+    }
+
+    .truck {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 80px;
+      height: 40px;
+      background: url('https://cdn-icons-png.flaticon.com/128/3256/3256319.png') no-repeat center center;
+      background-size: contain;
+      transform: translateY(-50%);
+    }
+
+    .animate {
+      animation: moveTruck 5s linear forwards;
+    }
+
+    @keyframes moveTruck {
+      0% {
+        left: -80px;
+      }
+      100% {
+        left: 100%;
+      }
+    }
+
+    /* Stats Section */
+    .stats-section {
+      margin-top: 80px;
+      position: relative;
+    }
+
+    .stats-section::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--primary), transparent);
+    }
+
+    .stats-heading {
+      margin-bottom: 40px;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--light);
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-top: 20px;
+    }
+
+    .stats-box {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--light);
+      padding: 30px 20px;
+      border-radius: 15px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .stats-box:nth-child(1) {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      box-shadow: 0 8px 20px rgba(52, 152, 219, 0.25);
+    }
+
+    .stats-box:nth-child(2) {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      box-shadow: 0 8px 20px rgba(46, 204, 113, 0.25);
+    }
+
+    .stats-box:nth-child(3) {
+      background: linear-gradient(135deg, #e67e22, #d35400);
+      box-shadow: 0 8px 20px rgba(230, 126, 34, 0.25);
+    }
+
+    .stats-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats-box .stat-value {
+      font-size: 48px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 10px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stats-box .stat-icon {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    /* Map Container */
+    #map-container {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 800px;
+      height: 70vh;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      background-color: white;
+      overflow: hidden;
+      z-index: 1000;
+    }
+
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    #closeMapBtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: var(--danger);
+      color: white;
+      padding: 10px 12px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    #closeMapBtn:hover {
+      background-color: #c0392b;
+      transform: rotate(90deg);
+    }
+
+    /* Footer Styles */
+    .footer {
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+      color: var(--light);
+      padding: 60px 20px 20px;
+      margin-top: 80px;
+      position: relative;
+    }
+
+    .footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .footer-column {
+      flex: 1;
+      min-width: 250px;
+      margin: 10px 20px;
+    }
+
+    .footer-column h3 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--primary);
+      position: relative;
+      padding-bottom: 10px;
+    }
+
+    .footer-column h3::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .footer-column h4 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary);
+      position: relative;
+      padding-bottom: 8px;
+    }
+
+    .footer-column h4::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    .footer-column p {
+      line-height: 1.6;
+      margin-bottom: 20px;
+      font-size: 15px;
+      opacity: 0.9;
+    }
+
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-column ul li {
+      margin: 10px 0;
+      transition: transform 0.3s;
+      cursor: pointer;
+    }
+
+    .footer-column ul li:hover {
+      transform: translateX(5px);
+      color: var(--primary);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .footer-social span {
+      font-size: 22px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .footer-social span:hover {
+      background: var(--primary);
+      transform: translateY(-5px);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 14px;
+      opacity: 0.7;
+    }
+
+    .modal-background {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 999;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .container {
+        padding: 100px 15px 40px;
+      }
+      
+      #main-heading {
+        font-size: 42px;
+      }
+      
+      .subtitle {
+        font-size: 18px;
+      }
+      
+      .action-section {
+        grid-template-columns: 1fr;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      
+      .stats-container {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .nav-links {
+        justify-content: center;
+        width: 100%;
+        gap: 20px;
+      }
+      
+      .container {
+        padding-top: 140px;
+      }
+      
+      #main-heading {
+        font-size: 36px;
+      }
+      
+      .stats-box .stat-value {
+        font-size: 36px;
+      }
+      
+      #map-container {
+        width: 90%;
+        height: 60vh;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav-links {
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      
+      #main-heading {
+        font-size: 32px;
+      }
+      
+      .subtitle {
+        font-size: 16px;
+      }
+      
+      .action-btn {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+      
+      .footer-column {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-image"></div>
+  <div class="overlay"></div>
+  
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="logo">
+        <div class="logo-text"><span>SENSI</span>BIN</div>
+      </div>
+      <nav class="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Features</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="page-wrapper">
+    <div class="container">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <h1 id="main-heading">SENSIBIN</h1>
+        <p class="subtitle">Clean Cities, Smarter Solutions</p>
+      </div>
+
+      <!-- Action Section -->
+      <div class="action-section">
+        <div class="action-card">
+          <h2>Get Your Current Location</h2>
+          <button class="action-btn" onclick="getLocation()"><i class="fas fa-map-marker-alt"></i> Get Location</button>
+          <p id="locationResult">Current Location: Not Set</p>
+        </div>
+        
+        <div class="action-card">
+          <h2>Get Optimized Garbage Collection Route</h2>
+          <button class="action-btn" onclick="getRoute()"><i class="fas fa-route"></i> Get Route</button>
+          <div class="truck-container" id="loadingTruck" style="display: none;">
+            <div class="road"></div>
+            <div class="truck" id="truck"></div>
+          </div>
+          <p id="routeResult"></p>
+        </div>
+      </div>
+
+      <button class="action-btn map-btn" onclick="toggleMap()"><i class="fas fa-map"></i> Show Map</button>
+
+      <!-- Stats Section -->
+      <div class="stats-section">
+        <h2 class="stats-heading">Our Impact</h2>
+        <div class="stats-container">
+          <div class="stats-box">
+            <i class="fas fa-trash-alt stat-icon"></i>
+            <div class="stat-value">50+</div>
+            Active Bins
+          </div>
+          <div class="stats-box">
+            <i class="fas fa-leaf stat-icon"></i>
+            <div class="stat-value">32%</div>
+            CO₂ Reduction
+          </div>
+          <div class="stats-box">
+            <i class="fas fa-route stat-icon"></i>
+            <div class="stat-value">12</div>
+            Collection Routes
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Smart Waste Disposal</h3>
+          <p>Making cities cleaner and smarter through real-time waste tracking and optimized collection routes.</p>
+        </div>
+        <div class="footer-column">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><i class="fas fa-angle-right"></i> Home</li>
+            <li><i class="fas fa-angle-right"></i> Features</li>
+            <li><i class="fas fa-angle-right"></i> About</li>
+            <li><i class="fas fa-angle-right"></i> Contact</li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <ul>
+            <li><i class="fas fa-envelope"></i> info@smartwaste.com</li>
+            <li><i class="fas fa-map-marker-alt"></i> Delhi, India</li>
+            <li><i class="fas fa-phone"></i> +91 6392739954</li>
+          </ul>
+          <div class="footer-social">
+            <span><i class="fas fa-globe"></i></span>
+            <span><i class="fab fa-facebook-f"></i></span>
+            <span><i class="fab fa-twitter"></i></span>
+          </div>
+        </div>
+      </div>
+      <p class="footer-bottom">© 2025 Smart Waste Disposal System. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <div class="modal-background" id="modal-bg"></div>
+  <div id="map-container">
+    <button id="closeMapBtn" onclick="toggleMap()"><i class="fas fa-times"></i></button>
+    <div id="map"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    let map, userMarker, currentLocation = null;
+
+    function getLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          currentLocation = { lat, lng };
+
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&addressdetails=1`)
+            .then(response => response.json())
+            .then(data => {
+              document.getElementById('locationResult').innerText = `Current Location: ${data.display_name}`;
+            });
+        }, (error) => {
+          alert('Unable to retrieve your location.');
+        });
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
+
+    function getRoute() {
+      if (!currentLocation) {
+        alert('Please get your current location first.');
+        return;
+      }
+
+      document.getElementById('loadingTruck').style.display = "block";
+      document.getElementById('truck').classList.add('animate');
+      document.getElementById('routeResult').innerText = "";
+
+      // Delay response by 5 seconds to show truck animation
+      fetch('/get_route')
+        .then(response => {
+          if (!response.ok) throw new Error("HTTP Error");
+          return response.json();
+        })
+        .then(data => {
+          setTimeout(() => {
+            let routeDescription = "Optimized Route:\n";
+            data.route.forEach(bin => {
+              routeDescription += `Go to ${bin.location_name} (Fill Level: ${bin.fill_level})\n`;
+            });
+
+            document.getElementById('routeResult').innerText = routeDescription;
+            document.getElementById('loadingTruck').style.display = "none";
+            document.getElementById('truck').classList.remove('animate');
+          }, 5000); // Delay for 5 seconds
+        })
+        .catch(error => {
+          alert("Error fetching route.");
+          document.getElementById('routeResult').innerText = "Failed to fetch route data.";
+          document.getElementById('loadingTruck').style.display = "none";
+          document.getElementById('truck').classList.remove('animate');
+        });
+    }
+
+    function toggleMap() {
+      const container = document.getElementById('map-container');
+      if (container.style.display === "block") {
+        container.style.display = "none";
+        if (map) map.remove();
+      } else {
+        if (!currentLocation) {
+          alert('Please get your current location first.');
+          return;
+        }
+        container.style.display = "block";
+        map = L.map('map').setView([currentLocation.lat, currentLocation.lng], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+        }).addTo(map);
+        userMarker = L.marker([currentLocation.lat, currentLocation.lng]).addTo(map)
+          .bindPopup('You are here!').openPopup();
+      }
+    }
+  </script>
+</body>
+</html>
