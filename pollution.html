@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SENSIBIN - Real-Time Air Quality Monitoring</title>
+  <!-- Font Awesome for icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  <!-- Google Font -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <!-- Animation Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <style>
+    :root {
+      --primary: #8e44ad;
+      --primary-light: #9b59b6;
+      --primary-dark: #6c3483;
+      --secondary: #3498db;
+      --secondary-light: #5dade2;
+      --accent: #f39c12;
+      --light-bg: #f9f0ff;
+      --text-dark: #2c3e50;
+      --text-light: #FFFFFF;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --radius: 16px;
+      --section-padding: 60px 0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    /* Navigation */
+    .navbar {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-light);
+    }
+    
+    .logo i {
+      font-size: 1.8rem;
+    }
+    
+    .brand-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    
+    .nav-links a.active {
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 5px;
+    }
+    
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      cursor: pointer;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/free-vector/people-walking-along-street-masks-isolated-flat-illustration-cartoon-characters-protecting-from-air-emissions-smog-from-industrial-plant_74855-14141.jpg?t=st=1746988063~exp=1746991663~hmac=57f8b625aadee22b0ce6d551885be37b429214fc79e6eb11afdf54d3fbe9dc75&w=1380');
+      background-size: cover;
+      background-position: center;
+      min-height: 500px;
+      color: white;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 800;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 12px 30px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      margin: 10px;
+    }
+    
+    .cta-button:hover {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .cta-button.secondary {
+      background: transparent;
+      border: 2px solid white;
+    }
+    
+    .cta-button.secondary:hover {
+      background-color: white;
+      color: var(--primary);
+    }
+    
+    /* Main Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Section Styles */
+    .section {
+      padding: var(--section-padding);
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .section-title h2 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+    
+    .section-title p {
+      color: #6c757d;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .text-highlight {
+      color: var(--primary);
+    }
+    
+    /* Cards */
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 30px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-header {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: var(--text-light);
+      padding: 20px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-body {
+      padding: 30px;
+    }
+    
+    /* Features Section */
+    .features {
+      background-color: var(--light-bg);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+    }
+    
+    .feature-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    
+    .feature-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--text-dark);
+    }
+    
+    .feature-description {
+      color: #6c757d;
+    }
+    
+    /* How It Works Section */
+    .how-it-works {
+      background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(142, 68, 173, 0.1));
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 0 15px;
+      position: relative;
+    }
+    
+    .step::after {
+      content: '';
+      position: absolute;
+      top: 35px;
+      right: -50%;
+      width: 100%;
+      height: 2px;
+      background-color: var(--secondary-light);
+      z-index: -1;
+    }
+    
+    .step:last-child::after {
+      display: none;
+    }
+    
+    .step-number {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 0 auto 20px;
+    }
+    
+    .step-title {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+    
+    .step-description {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+    
+    /* Air Quality Monitor */
+    .air-quality-monitor {
+      background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(241, 196, 15, 0.1));
+      padding: 50px 0;
+    }
+    
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      gap: 20px;
+    }
+    
+    .loading i {
+      font-size: 3rem;
+      color: var(--primary);
+      animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+    
+    .metric {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 25px;
+      border-radius: var(--radius);
+      background-color: white;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .metric:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 10px 0;
+    }
+    
+    .metric-label {
+      font-size: 1.1rem;
+      color: #6c757d;
+    }
+    
+    .metric.good { color: #27ae60; }
+    .metric.fair { color: #2ecc71; }
+    .metric.moderate { color: #f39c12; }
+    .metric.poor { color: #e74c3c; }
+    .metric.very-poor { color: #8e44ad; }
+    
+    .location-info {
+      display: flex;
+      align-items: center;
+      margin-top: 25px;
+      padding: 20px;
+      background-color: white;
+      border-radius: var(--radius);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .location-info i {
+      font-size: 2rem;
+      margin-right: 20px;
+      color: var(--primary);
+    }
+    
+    .error-message {
+      background-color: #FFEBEE;
+      color: #C62828;
+      padding: 30px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    .error-message i {
+      font-size: 2.5rem;
+    }
+    
+    .aqi-scale {
+      margin-top: 30px;
+      border-top: 1px solid #E0E0E0;
+      padding-top: 30px;
+    }
+    
+    .scale-title {
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    
+    .scale-bars {
+      display: flex;
+      height: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    
+    .scale-bar {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .scale-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    
+    /* Statistics Cards */
+    .statistics {
+      background: linear-gradient(135deg, rgba(142, 68, 173, 0.05), rgba(52, 152, 219, 0.05));
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-left: 5px solid var(--primary);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    
+    .stat-title {
+      color: #6c757d;
+      font-size: 1rem;
+    }
+    
+    .stat-icon {
+      float: right;
+      font-size: 2.5rem;
+      color: var(--primary-light);
+      opacity: 0.3;
+    }
+    
+    /* Health Impact Section */
+    .health-impact {
+      background: linear-gradient(135deg, rgba(142, 68, 173, 0.1), rgba(52, 152, 219, 0.1));
+    }
+    
+    .health-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    .health-card {
+      background-color: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s;
+    }
+    
+    .health-card:hover {
+      transform: translateY(-8px);
+    }
+    
+    .health-card-img {
+      height: 200px;
+      object-fit: cover;
+      width: 100%;
+    }
+    
+    .health-card-body {
+      padding: 25px;
+    }
+    
+    .health-card-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+    
+    .health-card-text {
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+    
+    .health-card-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: gap 0.3s;
+    }
+    
+    .health-card-link:hover {
+      gap: 10px;
+    }
+    
+    /* Testimonials */
+    .testimonials {
+      background-color: white;
+    }
+    
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    
+    .testimonial-card {
+      background: linear-gradient(135deg, rgba(241, 196, 15, 0.05), rgba(142, 68, 173, 0.05));
+      border-radius: var(--radius);
+      padding: 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      transition: transform 0.3s;
+    }
+    
+    .testimonial-card:hover {
+      transform: translateY(-8px);
+    }
+    
+    .testimonial-quote {
+      font-size: 4rem;
+      position: absolute;
+      top: -20px;
+      left: 20px;
+      color: var(--primary);
+      opacity: 0.1;
+    }
+    
+    .testimonial-text {
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .testimonial-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .testimonial-name {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .testimonial-title {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    /* Call to Action */
+    .cta {
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('/api/placeholder/1200/400');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding: 80px 0;
+    }
+    
+    .cta h2 {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+    }
+    
+    .cta p {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+    
+    /* Footer */
+    .footer {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 60px 0 0;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    
+    .footer-logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      color: white;
+    }
+    
+    .footer-about {
+      margin-bottom: 20px;
+      color: #adb5bd;
+    }
+    
+    .social-icons {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .social-icon {
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.3s;
+    }
+    
+    .social-icon:hover {
+      background-color: var(--primary);
+    }
+    
+    .footer-title {
+      font-size: 1.3rem;
+      margin-bottom: 25px;
+    }
+    
+    .footer-links {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+    
+    .footer-links a {
+      color: #adb5bd;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+      color: white;
+    }
+    
+    .footer-contact li {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+      color: #adb5bd;
+    }
+    
+    .footer-contact i {
+      color: var(--accent);
+    }
+    
+    .footer-bottom {
+      margin-top: 40px;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    
+    /* Newsletter */
+    .newsletter-form {
+      display: flex;
+      margin-top: 20px;
+    }
+    
+    .newsletter-input {
+      flex: 1;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 4px 0 0 4px;
+    }
+    
+    .newsletter-button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .newsletter-button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .features-grid,
+      .health-cards,
+      .testimonial-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .steps {
+        flex-direction: column;
+        gap: 40px;
+      }
+      
+      .step::after {
+        top: auto;
+        bottom: -25px;
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 50px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .mobile-toggle {
+        display: block;
+      }
+      
+      .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        flex-direction: column;
+        padding: 20px;
+        gap: 15px;
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        display: none;
+      }
+      
+      .nav-links.show {
+        display: flex;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .features-grid,
+      .health-cards,
+      .testimonial-grid,
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-content {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <i class="fas fa-leaf"></i>
+        <span class="brand-name">SENSIBIN</span>
+      </a>
+      <button class="mobile-toggle" id="mobile-toggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#health-impact">Health Impact</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content animate__animated animate__fadeIn">
+      <h1>Breathe <span class="text-highlight">Confident</span></h1>
+      <p>Real-time air quality monitoring for your health and well-being</p>
+      <div>
+        <a href="#monitor" class="cta-button">Check Air Quality</a>
+        <a href="#how-it-works" class="cta-button secondary">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section features" id="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Choose <span class="text-highlight">SENSIBIN</span></h2>
+        <p>Our platform offers comprehensive air quality monitoring solutions to help you make informed decisions about your outdoor activities.</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card animate__animated animate__fadeInUp">
+          <div class="feature-icon">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <h3 class="feature-title">Real-Time Location Data</h3>
+          <p class="feature-description">Get accurate air quality information specific to your exact location using advanced GPS technology.</p>
+        </div>
+        
+        <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+          <div class="feature-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="feature-title">Detailed Pollution Metrics</h3>
+          <p class="feature-description">Monitor multiple pollutants including PM2.5, PM10, and other harmful particles affecting your air.</p>
+        </div>
+        
+        <div class="feature-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+          <div class="feature-icon">
+            <i class="fas fa-bell"></i>
+          </div>
+          <h3 class="feature-title">Health Alerts</h3>
+          <p class="feature-description">Receive notifications when air quality levels become unhealthy, allowing you to take preventive measures.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section how-it-works" id="how-it-works">
+    <div class="container">
+      <div class="section-title">
+        <h2>How <span class="text-highlight">SENSIBIN</span> Works</h2>
+        <p>Our simple 3-step process provides you with accurate air quality information wherever you are.</p>
+      </div>
+      
+      <div class="steps">
+        <div class="step animate__animated animate__fadeInLeft">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Location Detection</h3>
+          <p class="step-description">We use your device's GPS to pinpoint your exact location for the most accurate results.</p>
+        </div>
+        
+        <div class="step animate__animated animate__fadeInLeft" style="animation-delay: 0.3s">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Data Collection</h3>
+          <p class="step-description">We gather real-time air quality data from the nearest monitoring stations and satellites.</p>
+        </div>
+        
+        <div class="step animate__animated animate__fadeInLeft" style="animation-delay: 0.6s">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Analysis & Display</h3>
+          <p class="step-description">We analyze the data and present it in an easy-to-understand format with health recommendations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="section statistics">
+    <div class="container">
+      <div class="section-title">
+        <h2>Air Pollution <span class="text-highlight">Statistics</span></h2>
+        <p>Understanding the global impact of air pollution on our environment and health.</p>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card animate__animated animate__fadeIn">
+          <i class="fas fa-globe-americas stat-icon"></i>
+          <div class="stat-number">91%</div>
+          <div class="stat-title">Of world population lives with poor air quality</div>
+        </div>
+        
+        <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.2s">
+          <i class="fas fa-lungs stat-icon"></i>
+          <div class="stat-number">7M+</div>
+          <div class="stat-title">Premature deaths annually from air pollution</div>
+        </div>
+        
+        <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.4s">
+          <i class="fas fa-child stat-icon"></i>
+          <div class="stat-number">93%</div>
+          <div class="stat-title">Of children breathe toxic air daily</div>
+        </div>
+        
+        <div class="stat-card animate__animated animate__fadeIn" style="animation-delay: 0.6s">
+          <i class="fas fa-tree stat-icon"></i>
+          <div class="stat-number">25%</div>
+          <div class="stat-title">Greenhouse gas reduction needed by 2030</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Health Impact Section -->
+  <section class="section health-impact" id="health-impact">
+    <div class="container">
+      <div class="section-title">
+        <h2>Health <span class="text-highlight">Impact</span></h2>
+        <p>Learn how air quality affects your health and what you can do to protect yourself and your loved ones.</p>
+      </div>
+      
+      <div class="health-cards">
+        <div class="health-card animate__animated animate__fadeInUp">
+          <img src="/api/placeholder/400/200" alt="Respiratory health" class="health-card-img">
+          <div class="health-card-body">
+            <h3 class="health-card-title">Respiratory Health</h3>
+            <p class="health-card-text">Poor air quality can cause or worsen respiratory conditions like asthma, COPD, and bronchitis. Learn about the impact on your lungs.</p>
+            <a href="#" class="health-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="health-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+          <img src="/api/placeholder/400/200" alt="Cardiovascular health" class="health-card-img">
+          <div class="health-card-body">
+            <h3 class="health-card-title">Cardiovascular Health</h3>
+            <p class="health-card-text">Air pollution can increase the risk of heart attacks, strokes, and other cardiovascular issues. Protect your heart with knowledge.</p>
+            <a href="#" class="health-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+        
+        <div class="health-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
+          <img src="/api/placeholder/400/200" alt="Child health" class="health-card-img">
+          <div class="health-card-body">
+            <h3 class="health-card-title">Children's Health</h3>
+            <p class="health-card-text">Children are particularly vulnerable to air pollution. Discover how to protect your kids from harmful air pollutants.</p>
+            <a href="#" class="health-card-link">Learn more <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="section testimonials" id="about">
+    <div class="container">
+      <div class="section-title">
+        <h2>What Our <span class="text-highlight">Users Say</span></h2>
+        <p>Read about how AirWatch has helped people make healthier choices for themselves and their families.</p>
+      </div>
+      
+      <div class="testimonial-grid">
+        <div class="testimonial-card animate__animated animate__fadeIn">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">As someone with asthma, AirWatch has been a game-changer. I check it every morning before planning my outdoor activities and it has helped me avoid several potential asthma attacks.</p>
+          <div class="testimonial-author">
+            <div>
+              <div class="testimonial-name">Sarah Johnson</div>
+              <div class="testimonial-title">Teacher, Delhi</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card animate__animated animate__fadeIn" style="animation-delay: 0.3s">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">I use AirWatch to determine when my children should play outdoors. The real-time updates and clear AQI explanations make it easy to make informed decisions about our family activities.</p>
+          <div class="testimonial-author">
+            <div>
+              <div class="testimonial-name">Michael Rodriguez</div>
+              <div class="testimonial-title">Father of three, Lucknow</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card animate__animated animate__fadeIn" style="animation-delay: 0.6s">
+          <div class="testimonial-quote">"</div>
+          <p class="testimonial-text">As a marathon runner, air quality significantly impacts my training. AirWatch helps me schedule my runs when pollution levels are lowest, improving my performance and protecting my health.</p>
+          <div class="testimonial-author">
+            <div>
+              <div class="testimonial-name">Emma Williams</div>
+              <div class="testimonial-title">Professional Athlete, Patna</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Call to Action Section -->
+  <section class="cta">
+    <div class="container">
+      <h2>Take Control of Your <span class="text-highlight">Air Quality</span> Today</h2>
+      <p>Join thousands of users who make healthier decisions using our real-time air quality monitoring tools.</p>
+      <a href="#monitor" class="cta-button animate__animated animate__pulse animate__infinite">Check Your Air Quality Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-logo">
+            <i class="fas fa-leaf"></i>
+            <span>SENSIBIN</span>
+          </div>
+          <p class="footer-about">SENSIBIN provides real-time air quality monitoring tools to help you make informed decisions about your outdoor activities and protect your health.</p>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="footer-title">Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#health-impact">Health Impact</a></li>
+            <li><a href="#about">About Us</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="footer-title">Resources</h3>
+          <ul class="footer-links">
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Air Quality Guide</a></li>
+            <li><a href="#">Health Tips</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="footer-title">Contact Us</h3>
+          <ul class="footer-contact">
+            <li>
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Delhi, India</span>
+            </li>
+            <li>
+              <i class="fas fa-phone-alt"></i>
+              <span>0522-123-4567</span>
+            </li>
+            <li>
+              <i class="fas fa-envelope"></i>
+              <span>info@sensibin.com</span>
+            </li>
+          </ul>
+          
+          <h4 style="margin-top: 20px; margin-bottom: 10px;">Subscribe to Newsletter</h4>
+          <form class="newsletter-form">
+            <input type="email" placeholder="Your email address" class="newsletter-input" required>
+            <button type="submit" class="newsletter-button">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </form>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p>&copy; 2025 SENSIBIN. All rights reserved. | Designed with <i class="fas fa-heart" style="color: var(--primary);"></i> for cleaner air</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile navigation toggle
+    document.getElementById('mobile-toggle').addEventListener('click', function() {
+      document.getElementById('nav-links').classList.toggle('show');
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: 'smooth'
+          });
+          
+          // Hide mobile menu after clicking
+          document.getElementById('nav-links').classList.remove('show');
+        }
+      });
+    });
+    
+    // Show appropriate icon based on AQI
+    function getAqiIcon(aqi) {
+      switch(aqi) {
+        case 1: return '<i class="fas fa-smile" style="color:#4CAF50"></i>';
+        case 2: return '<i class="fas fa-smile" style="color:#8BC34A"></i>';
+        case 3: return '<i class="fas fa-meh" style="color:#FFC107"></i>';
+        case 4: return '<i class="fas fa-frown" style="color:#FF5722"></i>';
+        case 5: return '<i class="fas fa-dizzy" style="color:#9C27B0"></i>';
+        default: return '<i class="fas fa-question-circle"></i>';
+      }
+    }
+    
+    // Get air quality class
+    function getAqiClass(aqi) {
+      switch(aqi) {
+        case 1: return 'good';
+        case 2: return 'fair';
+        case 3: return 'moderate';
+        case 4: return 'poor';
+        case 5: return 'very-poor';
+        default: return '';
+      }
+    }
+    
+    // Air quality recommendations based on AQI
+    function getHealthRecommendation(aqi) {
+      switch(aqi) {
+        case 1: 
+          return 'Air quality is ideal for most outdoor activities.';
+        case 2: 
+          return 'Unusually sensitive individuals should consider limiting prolonged outdoor exertion.';
+        case 3: 
+          return 'People with respiratory or heart conditions should limit outdoor exertion.';
+        case 4: 
+          return 'Everyone should limit outdoor exertion. Sensitive groups should remain indoors when possible.';
+        case 5: 
+          return 'Everyone should avoid all outdoor activities. If possible, remain indoors or wear a mask if going outside.';
+        default: 
+          return 'No recommendation available.';
+      }
+    }
+    
+    // Check if geolocation is supported
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      document.getElementById("result").innerHTML = `
+        <div class="error-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <div>
+            <p><strong>Geolocation Not Supported</strong></p>
+            <p>Your browser doesn't support geolocation, which is required for this service.</p>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Success callback when location is obtained
+    function success(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const apiKey = "e8e7e13f1ff70be9d882a94841039cf2"; // Replace with your actual OpenWeatherMap API key
+      
+      const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+      
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const aqi = data.list[0].main.aqi;
+          const pollutants = data.list[0].components;
+          const levels = ["Good", "Fair", "Moderate", "Poor", "Very Poor"];
+          const recommendation = getHealthRecommendation(aqi);
+          
+          document.getElementById("result").innerHTML = `
+            <div class="result-grid">
+              <div class="metric ${getAqiClass(aqi)}">
+                ${getAqiIcon(aqi)}
+                <div class="metric-value">${levels[aqi - 1]}</div>
+                <div class="metric-label">Current Air Quality</div>
+              </div>
+              
+              <div class="metric">
+                <i class="fas fa-chart-bar"></i>
+                <div class="metric-value">${aqi}</div>
+                <div class="metric-label">AQI Value</div>
+              </div>
+            </div>
+            
+            <div style="margin-top: 25px; padding: 20px; background-color: #f8f9fa; border-radius: 12px; border-left: 5px solid var(--primary);">
+              <h3 style="margin-bottom: 10px; color: var(--primary-dark);"><i class="fas fa-info-circle"></i> Health Recommendation</h3>
+              <p>${recommendation}</p>
+            </div>
+            
+            <div class="location-info">
+              <i class="fas fa-map-marker-alt"></i>
+              <div>
+                <p><strong>Your Location</strong></p>
+                <p>Latitude: ${lat.toFixed(4)}, Longitude: ${lon.toFixed(4)}</p>
+                <p style="font-size: 0.9rem; color: #6c757d;">Data measured at ${new Date().toLocaleTimeString()}</p>
+              </div>
+            </div>
+            
+            <div class="aqi-scale" style="margin-top: 30px;">
+              <h3 class="scale-title">Pollutant Levels (μg/m³)</h3>
+              <div class="result-grid" style="margin-top: 15px;">
+                <div class="metric">
+                  <i class="fas fa-smog"></i>
+                  <div class="metric-value">${pollutants.pm2_5.toFixed(1)}</div>
+                  <div class="metric-label">PM<sub>2.5</sub> (Fine Particles)</div>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-cloud"></i>
+                  <div class="metric-value">${pollutants.pm10.toFixed(1)}</div>
+                  <div class="metric-label">PM<sub>10</sub> (Coarse Particles)</div>
+                </div>
+              </div>
+              <div class="result-grid" style="margin-top: 15px;">
+                <div class="metric">
+                  <i class="fas fa-wind"></i>
+                  <div class="metric-value">${pollutants.o3.toFixed(1)}</div>
+                  <div class="metric-label">O<sub>3</sub> (Ozone)</div>
+                </div>
+                <div class="metric">
+                  <i class="fas fa-industry"></i>
+                  <div class="metric-value">${pollutants.no2.toFixed(1)}</div>
+                  <div class="metric-label">NO<sub>2</sub> (Nitrogen Dioxide)</div>
+                </div>
+              </div>
+            </div>
+          `;
+        })
+        .catch(() => {
+          document.getElementById("result").innerHTML = `
+            <div class="error-message">
+              <i class="fas fa-exclamation-circle"></i>
+              <div>
+                <p><strong>Data Retrieval Error</strong></p>
+                <p>We couldn't retrieve air quality data at this time. Please try again later.</p>
+              </div>
+            </div>
+          `;
+        });
+    }
+    
+    // Error callback when location access is denied
+    function error() {
+      document.getElementById("result").innerHTML = `
+        <div class="error-message">
+          <i class="fas fa-user-slash"></i>
+          <div>
+            <p><strong>Location Access Denied</strong></p>
+            <p>This app requires access to your location to show air quality data. Please enable location services and refresh the page.</p>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+  <section class="section air-quality-monitor" id="monitor">
+    <div class="container">
+      <div class="section-title">
+        <h2>Check Your <span class="text-highlight">Air Quality</span> Now</h2>
+        <p>Get real-time air quality information for your current location with just one click.</p>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-wind"></i> Current Air Quality
+        </div>
+        <div class="card-body" id="result">
+          <div class="loading">
+            <i class="fas fa-circle-notch"></i>
+            <p>Detecting your location and fetching air quality data...</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <i class="fas fa-info-circle"></i> Understanding Air Quality Index
+        </div>
+        <div class="card-body">
+          <p>The Air Quality Index (AQI) is a standardized indicator developed by environmental agencies to communicate how polluted the air currently is or how polluted it is forecast to become. It helps you understand when to take precautions to protect your health.</p>
+          
+          <div class="aqi-scale">
+            <h3 class="scale-title">AQI Scale Explanation</h3>
+            <div class="scale-bars">
+              <div class="scale-bar" style="background-color: #4CAF50;">1</div>
+              <div class="scale-bar" style="background-color: #8BC34A;">2</div>
+              <div class="scale-bar" style="background-color: #FFC107;">3</div>
+              <div class="scale-bar" style="background-color: #FF5722;">4</div>
+              <div class="scale-bar" style="background-color: #9C27B0;">5</div>
+            </div>
+            <div class="scale-labels">
+              <span>Good</span>
+              <span>Fair</span>
+              <span>Moderate</span>
+              <span>Poor</span>
+              <span>Very Poor</span>
+            </div>
+            
+            <div style="margin-top: 30px;">
+              <p><strong>Good (1):</strong> Air quality is considered satisfactory, and air pollution poses little or no risk.</p>
+              <p><strong>Fair (2):</strong> Air quality is acceptable; however, there may be a moderate health concern for a very small number of people.</p>
+              <p><strong>Moderate (3):</strong> Members of sensitive groups may experience health effects. The general public is not likely to be affected.</p>
+              <p><strong>Poor (4):</strong> Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.</p>
+              <p><strong>Very Poor (5):</strong> Health warnings of emergency conditions. The entire population is more likely to be affected.</p>
+            </div>
+          </div>
